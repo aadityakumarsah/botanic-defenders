@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "export": "next export",
     "lint": "next lint",
     "db:push": "drizzle-kit push",
     "db:studio": "npx drizzle-kit studio"
@@ -16,6 +17,8 @@
     "@aws-sdk/client-ses": "^3.726.1",
     "@aws-sdk/client-sns": "^3.726.1",
     "@aws-sdk/s3-request-presigner": "^3.726.1",
+    "@capacitor/cli": "^7.4.3",
+    "@capacitor/core": "^7.4.3",
     "@coinbase/agentkit": "^0.1.1",
     "@coinbase/agentkit-langchain": "^0.1.0",
     "@coinbase/cdp-langchain": "^0.0.15",
