@@ -8,6 +8,7 @@
     "start": "next start",
     "export": "next export",
     "lint": "next lint",
+    "test": "echo 'Running tests...' && node test/Lock.js && echo 'All tests passed!'",
     "db:push": "drizzle-kit push",
     "db:studio": "npx drizzle-kit studio"
   },

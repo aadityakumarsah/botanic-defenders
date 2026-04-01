@@ -15,18 +15,34 @@ import json
 
 app = FastAPI(title="Plant Disease Identification", description="AI-powered plant disease detection system")
 
-# Configure CORS
+# Configure CORS - Allow dynamic origins for both local and production
+ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://localhost:8002",
+    "http://127.0.0.1:3000",
+]
+
+# Add production frontend URL if provided
+FRONTEND_URL = os.getenv("FRONTEND_URL")
+if FRONTEND_URL and FRONTEND_URL not in ALLOWED_ORIGINS:
+    ALLOWED_ORIGINS.append(FRONTEND_URL)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:3001"],  # Add your frontend URLs
+    allow_origins=ALLOWED_ORIGINS or ["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Configure Gemini API
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "AIzaSyBpnHNkRJvh0obVAm44_4I9y2JjHt-8rNA")
-genai.configure(api_key=GEMINI_API_KEY)
+# Configure Gemini API - Use environment variable (required for production)
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+if not GEMINI_API_KEY:
+    print("WARNING: GEMINI_API_KEY not set. AI features will not work.")
+    print("Set GEMINI_API_KEY environment variable to enable Gemini API features.")
+if GEMINI_API_KEY:
+    genai.configure(api_key=GEMINI_API_KEY)
 
 # Load the model and processor
 print("Loading plant disease classification model...")
@@ -72,8 +88,11 @@ def preprocess_image(image_bytes):
         raise HTTPException(status_code=400, detail=f"Error processing image: {str(e)}")
 
 def get_disease_remedy(disease_name):
-    """Get disease remedy and fertilizer suggestions using Gemini API"""
+    if not GEMINI_API_KEY:
+        return f"Treatment recommendations: For {disease_name}, consult with a local agricultural expert or plant pathologist for specific treatment options. General recommendations include proper watering, adequate sunlight, and maintaining good plant hygiene."
+    
     try:
+        model_gemini = genai.GenerativeModel('gemini-1
         model_gemini = genai.GenerativeModel('gemini-2.5-flash')
         
         prompt = f"""

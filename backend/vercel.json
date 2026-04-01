@@ -2,17 +2,18 @@
   "version": 2,
   "builds": [
     {
-      "src": "main.py",
-      "use": "@vercel/python"
+      "src": "api/index.py",
+      "use": "@vercel/python",
+      "config": {
+        "maxLambdaSize": "3008mb",
+        "runtime": "python3.11"
+      }
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "main.py"
+      "dest": "api/index.py"
     }
-  ],
-  "env": {
-    "GEMINI_API_KEY": "@gemini_api_key"
-  }
+  ]
 }
